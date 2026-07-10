@@ -16,13 +16,16 @@ public class CategoryService : ICategoryService
     
     public async Task<List<CategoryResponse>> GetAllCategories()
     {
-        var categories = await _db.Categories
+        var rawCategories = await _db.Categories
             .AsNoTracking()
-            .Select(x => MapToResponse(x))
             .ToListAsync();
         
-        if (categories.Count == 0)
+        if (rawCategories.Count == 0)
             throw new KeyNotFoundException("Category not found");
+        
+        var categories = rawCategories
+            .Select(x => MapToResponse(x))
+            .ToList();
         
         return categories;
     }
@@ -43,7 +46,7 @@ public class CategoryService : ICategoryService
         await _db.SaveChangesAsync();
     }
 
-    public CategoryResponse MapToResponse(Models.Category c) => new()
+    private static CategoryResponse MapToResponse(Models.Category c) => new()
     {
         Id = c.Id,
         Name = c.Name,

@@ -8,5 +8,8 @@ public interface ICategoryService
 
     Task CreateCategory(string name, string description);
     
-    CategoryResponse MapToResponse(Models.Category c);
+    private static CategoryResponse MapToResponse(Models.Category c)
+    {
+        throw new NotImplementedException();
+    }
 }
