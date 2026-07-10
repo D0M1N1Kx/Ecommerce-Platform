@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Ecommerce.API.Models;
 using Ecommerce.API.Settings;
@@ -43,7 +44,8 @@ public class TokenService : ITokenService
 
     public string GenerateRefreshToken()
     {
-        throw new NotImplementedException();
+        var randomBytes = RandomNumberGenerator.GetBytes(64);
+        return Convert.ToBase64String(randomBytes);
     }
 
     public string HashToken(string token)
