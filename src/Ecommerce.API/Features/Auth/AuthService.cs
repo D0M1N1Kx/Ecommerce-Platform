@@ -11,10 +11,10 @@ namespace Ecommerce.API.Features.Auth;
 public class AuthService : IAuthService
 {
     private readonly AppDbContext _db;
-    private readonly TokenService _tokenService;
+    private readonly ITokenService _tokenService;
     private readonly JwtSettings _jwtSettings;
 
-    public AuthService(AppDbContext db, TokenService tokenService, JwtSettings jwtSettings)
+    public AuthService(AppDbContext db, ITokenService tokenService, JwtSettings jwtSettings)
     {
         _db = db;
         _tokenService = tokenService;

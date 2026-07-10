@@ -2,6 +2,7 @@ using System.Text;
 using Ecommerce.API.Data;
 using Ecommerce.API.Features.Auth;
 using Ecommerce.API.Settings;
+using Ecommerce.API.Shared.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,7 @@ var jwtSettings = builder.Configuration
     .Get<JwtSettings>()!;
 
 builder.Services.AddSingleton(jwtSettings);
+builder.Services.AddSingleton<ITokenService, TokenService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
