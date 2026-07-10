@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,6 +44,19 @@ public class GlobalExceptionHandler : IExceptionHandler
                 Detail = exception.Message
             }, cancellationToken);
             
+            return true;
+        }
+
+        if (exception is DuplicateNameException)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
+            await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+            {
+                Status = StatusCodes.Status409Conflict,
+                Title = "Already Exists",
+                Detail = exception.Message
+            }, cancellationToken);
+
             return true;
         }
 
