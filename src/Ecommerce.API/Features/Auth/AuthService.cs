@@ -1,22 +1,30 @@
 using System.Data;
 using Ecommerce.API.Data;
 using Ecommerce.API.Models;
+using Ecommerce.API.Settings;
+using Ecommerce.API.Shared.Services;
+using Ecommerce.Shared.DTOs.Auth.Responses;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Features.Auth;
 
 public class AuthService : IAuthService
 {
     private readonly AppDbContext _db;
+    private readonly TokenService _tokenService;
+    private readonly JwtSettings _jwtSettings;
 
-    public AuthService(AppDbContext db)
+    public AuthService(AppDbContext db, TokenService tokenService, JwtSettings jwtSettings)
     {
         _db = db;
+        _tokenService = tokenService;
+        _jwtSettings = jwtSettings;
     }
     
     public async Task RegisterAsync(string username, string email, string password)
     {
-        var existingUser = _db.Users.FirstOrDefault(x => x.Username == username && x.Email == email);
-        if (existingUser != null)
+        var existingUser = await _db.Users.AnyAsync(x => x.Username == username || x.Email == email);
+        if (existingUser)
             throw new DuplicateNameException($"Username or email is already registered.");
         
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
@@ -40,8 +48,27 @@ public class AuthService : IAuthService
         await _db.SaveChangesAsync();
     }
 
-    public Task<string?> LoginAsync(string email, string password)
+    public async Task<LoginResponse> LoginAsync(string email, string password)
     {
-        throw new NotImplementedException();
+        var user = await _db.Users.FirstOrDefaultAsync(x => x.Email == email)
+            ?? throw new KeyNotFoundException("Invalid email or password.");
+
+        if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            throw new KeyNotFoundException("Invalid username or password.");
+        
+        var token = _tokenService.GenerateAccessToken(user);
+        var refreshToken = _tokenService.GenerateRefreshToken();
+
+        var newRefreshToken = new RefreshToken
+        {
+            UserId = user.Id,
+            TokenHash = _tokenService.HashToken(refreshToken),
+            ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
+        };
+
+        _db.RefreshTokens.Add(newRefreshToken);
+        await _db.SaveChangesAsync();
+        
+        return new LoginResponse { AccessToken = token, RefreshToken = refreshToken };
     }
 }
