@@ -25,5 +25,5 @@ public class Discount
     public bool IsActive { get; set; } = true;
     
     [Column("valid_until")]
-    public DateTime ValidUntil { get; set; }
+    public DateTime? ValidUntil { get; set; }
 }

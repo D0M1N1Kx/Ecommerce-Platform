@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -37,7 +36,7 @@ public class Product
     public int CategoryId { get; set; }
     
     [Column("discount_id")]
-    public int DiscountId { get; set; }
+    public int? DiscountId { get; set; }
 
     public Category Category { get; set; } = null!;
     public Discount? Discount { get; set; }
