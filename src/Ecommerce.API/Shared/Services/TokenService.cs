@@ -50,6 +50,7 @@ public class TokenService : ITokenService
 
     public string HashToken(string token)
     {
-        throw new NotImplementedException();
+        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(token));
+        return Convert.ToBase64String(bytes);
     }
 }
