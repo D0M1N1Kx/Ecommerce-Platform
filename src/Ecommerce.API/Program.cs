@@ -2,6 +2,7 @@ using System.Text;
 using Ecommerce.API.Data;
 using Ecommerce.API.Features.Auth;
 using Ecommerce.API.Features.Category;
+using Ecommerce.API.Features.Discount;
 using Ecommerce.API.Settings;
 using Ecommerce.API.Shared.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,6 +46,7 @@ builder.Services.AddOpenApi("v1", options => options.AddDocumentTransformer<Bear
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IDiscountService, DiscountService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
