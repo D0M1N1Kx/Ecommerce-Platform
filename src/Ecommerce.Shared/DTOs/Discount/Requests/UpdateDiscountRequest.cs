@@ -2,15 +2,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Ecommerce.Shared.DTOs.Discount.Requests;
 
-public class CreateDiscountRequest
+public class UpdateDiscountRequest
 {
     [Required]
-    [MaxLength(100)]
-    public string Name { get; set; } = string.Empty;
+    public int Id { get; set; }
     
-    [Required]
+    [MaxLength(100)]
+    public string? Name { get; set; } = string.Empty;
+    
     [Range(1.00, 100.00)]
-    public decimal DiscountPercentage { get; set; }
+    public decimal? DiscountPercentage { get; set; }
     
     public DateTime? ValidUntil { get; set; }
 }

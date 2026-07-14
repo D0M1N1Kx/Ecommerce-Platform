@@ -24,7 +24,7 @@ public class CategoryService : ICategoryService
             throw new KeyNotFoundException("Category not found");
         
         var categories = rawCategories
-            .Select(x => MapToResponse(x))
+            .Select(MapToResponse)
             .ToList();
         
         return categories;
