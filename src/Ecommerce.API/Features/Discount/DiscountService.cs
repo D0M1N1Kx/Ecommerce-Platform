@@ -1,5 +1,6 @@
 using System.Data;
 using Ecommerce.API.Data;
+using Ecommerce.API.Mappings;
 using Ecommerce.Shared.DTOs.Discount.Responses;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,7 @@ public class DiscountService : IDiscountService
             throw new KeyNotFoundException("No discounts found");
         
         var discounts = rawDiscounts
-            .Select(MapToResponse)
+            .Select(d => d.MapToResponse()!)
             .ToList();
         
         return discounts;
@@ -59,13 +60,4 @@ public class DiscountService : IDiscountService
         
         await _db.SaveChangesAsync();
     }
-
-    private static DiscountResponse MapToResponse(Models.Discount d) => new()
-    {
-        Id = d.Id,
-        Name = d.Name,
-        DiscountPrecentage = d.DiscountPercentage,
-        IsActive = d.IsActive,
-        ValidUntil = d.ValidUntil
-    };
 }

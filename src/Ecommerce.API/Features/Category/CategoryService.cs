@@ -1,5 +1,6 @@
 using System.Data;
 using Ecommerce.API.Data;
+using Ecommerce.API.Mappings;
 using Ecommerce.Shared.DTOs.Category.Responses;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,7 @@ public class CategoryService : ICategoryService
             throw new KeyNotFoundException("Category not found");
         
         var categories = rawCategories
-            .Select(MapToResponse)
+            .Select(c => c.MapToResponse())
             .ToList();
         
         return categories;
@@ -45,11 +46,4 @@ public class CategoryService : ICategoryService
         _db.Categories.Add(category);
         await _db.SaveChangesAsync();
     }
-
-    private static CategoryResponse MapToResponse(Models.Category c) => new()
-    {
-        Id = c.Id,
-        Name = c.Name,
-        Description = c.Description
-    };
 }

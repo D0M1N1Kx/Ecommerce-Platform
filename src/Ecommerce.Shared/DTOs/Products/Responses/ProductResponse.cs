@@ -11,6 +11,6 @@ public class ProductResponse
     public decimal Price { get; set; }
     public int Stock { get; set; } = 0;
     public string Sku { get; set; } = string.Empty;
-    public CategoryResponse Category { get; set; } = new CategoryResponse();
+    public CategoryResponse? Category { get; set; } = new CategoryResponse();
     public DiscountResponse? Discount { get; set; }
 }
