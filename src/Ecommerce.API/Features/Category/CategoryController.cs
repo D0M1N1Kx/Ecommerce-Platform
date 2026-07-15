@@ -1,4 +1,5 @@
 using Ecommerce.Shared.DTOs.Category.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Features.Category;
@@ -22,6 +23,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateCategory(CreateCategory request)
     {
         await _categoryService.CreateCategory(request.Name, request.Description);
