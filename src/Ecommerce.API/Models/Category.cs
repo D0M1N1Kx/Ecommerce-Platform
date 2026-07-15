@@ -16,6 +16,7 @@ public class Category
     [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
     
+    [MaxLength(255)]
     [Column("description", TypeName = "text")]
     public string Description { get; set; } = string.Empty;
 }

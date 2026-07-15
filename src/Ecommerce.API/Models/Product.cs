@@ -16,6 +16,7 @@ public class Product
     public string Name { get; set; } = string.Empty;
     
     [Column("description", TypeName = "text")]
+    [MaxLength(255)]
     public string Description { get; set; } = string.Empty;
     
     [Required]

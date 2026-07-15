@@ -1,5 +1,6 @@
 using Ecommerce.API.Data;
 using Ecommerce.API.Mappings;
+using Ecommerce.API.Models;
 using Ecommerce.Shared.DTOs.Category.Responses;
 using Ecommerce.Shared.DTOs.Discount.Responses;
 using Ecommerce.Shared.DTOs.Products.Requests;
@@ -35,7 +36,29 @@ public class ProductService : IProductService
 
     public async Task CreateAsync(CreateProductRequest request)
     {
-        throw new NotImplementedException();
+        var category = await _db.Categories
+            .FirstOrDefaultAsync(x => x.Id == request.CategoryId)
+            ?? throw new KeyNotFoundException($"Category not found with id: {request.CategoryId}");
+
+        var discount = request.DiscountId is null
+            ? null
+            : await _db.Discounts
+                  .FirstOrDefaultAsync(x => x.Id == request.DiscountId)
+              ?? throw new KeyNotFoundException($"Discount not found with id: {request.DiscountId}");
+        
+        var product = new Product
+        {
+            Name = request.Name,
+            Description = request.Description,
+            Price = request.Price,
+            Stock = request.Stock,
+            Sku = request.Sku,
+            CategoryId = category.Id,
+            DiscountId = discount?.Id
+        };
+
+        _db.Products.Add(product);
+        await _db.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(UpdateProductRequest request)
