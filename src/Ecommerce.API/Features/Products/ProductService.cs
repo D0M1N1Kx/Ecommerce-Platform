@@ -18,7 +18,53 @@ public class ProductService : IProductService
     
     public async Task<List<ProductResponse>> GetAllAsync(GetProductsRequest request)
     {
-        throw new NotImplementedException();
+        var query = _db.Products
+            .Include(p => p.Category)
+            .Include(p => p.Discount)
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+        {
+            query = query.Where(p =>
+                p.Name.Contains(request.SearchTerm) ||
+                p.Description.Contains(request.SearchTerm));
+        }
+
+        if (request.CategoryId.HasValue)
+        {
+            query = query.Where(p => p.CategoryId == request.CategoryId.Value);
+        }
+
+        if (request.MinPrice.HasValue)
+        {
+            query = query.Where(p => 
+                (p.Discount != null && p.Discount.IsActive
+                    ? p.Price - (p.Price * (p.Discount.DiscountPercentage / 100))
+                    : p.Price) >= request.MinPrice.Value);
+        }
+
+        if (request.MaxPrice.HasValue)
+        {
+            query = query.Where(p => 
+                (p.Discount != null && p.Discount.IsActive
+                    ? p.Price - (p.Price * (p.Discount.DiscountPercentage / 100))
+                    : p.Price) <= request.MaxPrice.Value);
+        }
+
+        if (request.InStockOnly == true)
+        {
+            query = query.Where(p => p.Stock > 0);
+        }
+
+        var skip = (request.PageNumber - 1) * request.PageSize;
+
+        var rawProducts = await query
+            .Skip(skip)
+            .Take(request.PageSize)
+            .ToListAsync();
+
+        return rawProducts.Select(p => p.MapToResponse()!).ToList();
     }
 
     public async Task<ProductResponse> GetByIdAsync(Guid id)
