@@ -1,8 +1,6 @@
 using Ecommerce.API.Data;
 using Ecommerce.API.Mappings;
 using Ecommerce.API.Models;
-using Ecommerce.Shared.DTOs.Category.Responses;
-using Ecommerce.Shared.DTOs.Discount.Responses;
 using Ecommerce.Shared.DTOs.Products.Requests;
 using Ecommerce.Shared.DTOs.Products.Responses;
 using Microsoft.EntityFrameworkCore;
@@ -98,6 +96,11 @@ public class ProductService : IProductService
 
     public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var product = await _db.Products
+            .FirstOrDefaultAsync(x => x.Id == id)
+            ?? throw new KeyNotFoundException($"Product not found with id: {id}");
+
+        _db.Products.Remove(product);
+        await _db.SaveChangesAsync();
     }
 }
