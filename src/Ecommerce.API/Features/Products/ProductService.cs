@@ -63,7 +63,37 @@ public class ProductService : IProductService
 
     public async Task UpdateAsync(UpdateProductRequest request)
     {
-        throw new NotImplementedException();
+        var product = await _db.Products
+            .FirstOrDefaultAsync(x => x.Id == request.ProductId)
+            ?? throw new KeyNotFoundException($"Product not found with id: {request.ProductId}");
+
+        if (request.CategoryId != null)
+        {
+            var categoryExists = await _db.Categories
+                .AnyAsync(x => x.Id == request.CategoryId);
+            if (!categoryExists)
+                throw new KeyNotFoundException($"Category not found with id: {request.CategoryId}");
+
+            product.CategoryId = request.CategoryId.Value;
+        }
+
+        if (request.DiscountId != null)
+        {
+            var discountExists = await _db.Discounts
+                .AnyAsync(x => x.Id == request.DiscountId);
+            if (!discountExists)
+                throw new KeyNotFoundException($"Discount not found with id: {request.DiscountId}");
+
+            product.DiscountId = request.DiscountId.Value;
+        }
+        
+        if (request.Name != null) product.Name = request.Name;
+        if (request.Description != null) product.Description = request.Description;
+        if (request.Price != null) product.Price = (decimal)request.Price;
+        if (request.Stock != null) product.Stock = (int)request.Stock;
+        if (request.Sku != null) product.Sku = request.Sku;
+
+        await _db.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(Guid id)
