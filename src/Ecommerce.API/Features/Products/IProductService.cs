@@ -14,4 +14,9 @@ public interface IProductService
     Task UpdateAsync(UpdateProductRequest request);
     
     Task DeleteAsync(Guid id);
+    
+    private static ProductResponse MapToResponse(Models.Product p)
+    {
+        throw new NotImplementedException();
+    }
 }
