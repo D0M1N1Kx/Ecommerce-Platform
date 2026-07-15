@@ -16,7 +16,7 @@ public class ProductService : IProductService
         _db = db;
     }
     
-    public async Task<List<ProductResponse>> GetAllAsync()
+    public async Task<List<ProductResponse>> GetAllAsync(GetProductsRequest request)
     {
         throw new NotImplementedException();
     }

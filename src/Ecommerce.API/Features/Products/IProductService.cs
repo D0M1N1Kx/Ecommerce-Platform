@@ -5,7 +5,7 @@ namespace Ecommerce.API.Features.Products;
 
 public interface IProductService
 {
-    Task<List<ProductResponse>> GetAllAsync();
+    Task<List<ProductResponse>> GetAllAsync(GetProductsRequest request);
     
     Task<ProductResponse> GetByIdAsync(Guid id);
     
