@@ -93,12 +93,26 @@ public class CartService : ICartService
 
     public async Task DeleteCartItemAsync(Guid userId, Guid productId)
     {
-        throw new NotImplementedException();
+        var cart = await GetCartFromUserId(userId, true)
+                   ?? throw new KeyNotFoundException("Cart not found");
+
+        var existingItem = cart.CartItems
+              .FirstOrDefault(x => x.ProductId == productId) 
+              ?? throw new KeyNotFoundException("Existing item not found");
+
+        _db.CartItems.Remove(existingItem);
+        await _db.SaveChangesAsync();
     }
 
     public async Task ClearCartAsync(Guid userId)
     {
-        throw new NotImplementedException();
+        var cart = await GetCartFromUserId(userId, true)
+                   ?? throw new KeyNotFoundException("Cart not found");
+
+        if (!cart.CartItems.Any()) return;
+        
+        _db.CartItems.RemoveRange(cart.CartItems);
+        await _db.SaveChangesAsync();
     }
 
     private async Task<Models.Cart?> GetCartFromUserId(Guid userId, bool trackChanges = false)
