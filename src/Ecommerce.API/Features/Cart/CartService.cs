@@ -27,23 +27,28 @@ public class CartService : ICartService
 
     public async Task AddCartItemAsync(Guid userId, AddCartItemRequest request)
     {
-        var cart = await GetCartFromUserId(userId)
+        var cart = await GetCartFromUserId(userId, true)
             ?? throw new KeyNotFoundException("Cart not found");
 
-        var productExists = await _db.Products
-            .AnyAsync(x => x.Id == request.ProductId);
-        if (!productExists)
-            throw new KeyNotFoundException("Product not found");
+        var product = await _db.Products
+                          .FirstOrDefaultAsync(x => x.Id == request.ProductId)
+                      ?? throw new KeyNotFoundException("Product not found");
 
-        var existingItem = await _db.CartItems
-            .FirstOrDefaultAsync(x => x.CartId == cart.Id && x.ProductId == request.ProductId);
+        var existingItem = cart.CartItems
+            .FirstOrDefault(x => x.ProductId == request.ProductId);
 
         if (existingItem != null)
         {
+            if (product.Stock < existingItem.Quantity + request.Quantity)
+                throw new InvalidOperationException($"Not enough stock. Only {product.Stock} items available");
+            
             existingItem.Quantity += request.Quantity;
         }
         else
         {
+            if (product.Stock < request.Quantity)
+                throw new InvalidOperationException($"Not enough stock. Only {product.Stock} items available");
+            
             var item = new CartItem
             {
                 CartId = cart.Id,
@@ -62,20 +67,16 @@ public class CartService : ICartService
         var cart = await GetCartFromUserId(userId, true)
                    ?? throw new KeyNotFoundException("Cart not found");
 
-        var product = await _db.Products
-            .FirstOrDefaultAsync(x => x.Id == request.ProductId)
-            ?? throw new KeyNotFoundException("Product not found");;
-
-        var existingItem = await _db.CartItems
-            .FirstOrDefaultAsync(x => x.CartId == cart.Id && x.ProductId == request.ProductId)
+        var existingItem = cart.CartItems
+            .FirstOrDefault(x => x.ProductId == request.ProductId)
             ?? throw new KeyNotFoundException("Existing item not found");
 
         if (request.IsIncrement)
         {
             var targetQuantity = existingItem.Quantity + request.Amount;
 
-            if (product.Stock < targetQuantity)
-                throw new InvalidOperationException($"Not enough stock. Only {product.Stock} items available");
+            if (existingItem.Product.Stock < targetQuantity)
+                throw new InvalidOperationException($"Not enough stock. Only {existingItem.Product.Stock} items available");
 
             existingItem.Quantity = targetQuantity;
         }
@@ -134,14 +135,5 @@ public class CartService : ICartService
             .FirstOrDefaultAsync(x => x.UserId == userId);
 
         return cart;
-    }
-
-    private async Task<List<CartItem>> GetCartItemsFromCartId(Guid cartId)
-    {
-        var cartItems = await _db.CartItems
-            .Where(x => x.CartId == cartId)
-            .ToListAsync();
-
-        return cartItems ?? [];
     }
 }
