@@ -1,4 +1,5 @@
 using Ecommerce.API.Models;
+using Ecommerce.Shared.DTOs.Cart.Responses;
 using Ecommerce.Shared.DTOs.Category.Responses;
 using Ecommerce.Shared.DTOs.Discount.Responses;
 using Ecommerce.Shared.DTOs.Products.Responses;
@@ -47,6 +48,32 @@ public static class MappingExtension
             Sku = product.Sku,
             Category = product.Category.MapToResponse() ?? new CategoryResponse(),
             Discount = product.Discount.MapToResponse()
+        };
+    }
+
+    public static CartItemResponse? MapToResponse(this CartItem? cartItem)
+    {
+        if (cartItem is null) return null;
+
+        return new CartItemResponse
+        {
+            Id = cartItem.Id,
+            Product = cartItem.Product.MapToResponse(),
+            Quantity = cartItem.Quantity
+        };
+    }
+
+    public static CartResponse? MapToResponse(this Cart? cart)
+    {
+        if (cart is null) return null;
+
+        return new CartResponse
+        {
+            Id = cart.Id,
+            CartItems = cart.CartItems?
+                .Select(x => x.MapToResponse())
+                .Where(x => x != null)
+                .ToList()
         };
     }
 }
