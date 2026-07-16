@@ -38,7 +38,7 @@ public class AuthService : IAuthService
         
         _db.Users.Add(user);
 
-        var cart = new Cart
+        var cart = new Models.Cart
         {
             UserId = user.Id,
         };
