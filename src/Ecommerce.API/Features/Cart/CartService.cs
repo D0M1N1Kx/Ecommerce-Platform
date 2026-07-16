@@ -59,7 +59,36 @@ public class CartService : ICartService
 
     public async Task ChangeQuantityAsync(Guid userId, ChangeCartItemQuantityRequest request)
     {
-        throw new NotImplementedException();
+        var cart = await GetCartFromUserId(userId, true)
+                   ?? throw new KeyNotFoundException("Cart not found");
+
+        var product = await _db.Products
+            .FirstOrDefaultAsync(x => x.Id == request.ProductId)
+            ?? throw new KeyNotFoundException("Product not found");;
+
+        var existingItem = await _db.CartItems
+            .FirstOrDefaultAsync(x => x.CartId == cart.Id && x.ProductId == request.ProductId)
+            ?? throw new KeyNotFoundException("Existing item not found");
+
+        if (request.IsIncrement)
+        {
+            var targetQuantity = existingItem.Quantity + request.Amount;
+
+            if (product.Stock < targetQuantity)
+                throw new InvalidOperationException($"Not enough stock. Only {product.Stock} items available");
+
+            existingItem.Quantity = targetQuantity;
+        }
+        else
+        {
+            existingItem.Quantity -= request.Amount;
+            if (existingItem.Quantity <= 0)
+            {
+                _db.CartItems.Remove(existingItem);
+            }
+        }
+
+        await _db.SaveChangesAsync();
     }
 
     public async Task DeleteCartItemAsync(Guid userId, Guid productId)
@@ -72,10 +101,16 @@ public class CartService : ICartService
         throw new NotImplementedException();
     }
 
-    private async Task<Models.Cart?> GetCartFromUserId(Guid userId)
+    private async Task<Models.Cart?> GetCartFromUserId(Guid userId, bool trackChanges = false)
     {
-        var cart = await _db.Carts
-            .AsNoTracking()
+        var query = _db.Carts.AsQueryable();
+
+        if (!trackChanges)
+        {
+            query = query.AsNoTracking();
+        }
+        
+        var cart = await query
             .Include(x => x.CartItems)
                 .ThenInclude(x => x.Product)
                     .ThenInclude(x => x.Category)
