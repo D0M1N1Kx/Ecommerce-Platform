@@ -1,6 +1,7 @@
 using System.Text;
 using Ecommerce.API.Data;
 using Ecommerce.API.Features.Auth;
+using Ecommerce.API.Features.Cart;
 using Ecommerce.API.Features.Category;
 using Ecommerce.API.Features.Discount;
 using Ecommerce.API.Features.Products;
@@ -49,6 +50,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
