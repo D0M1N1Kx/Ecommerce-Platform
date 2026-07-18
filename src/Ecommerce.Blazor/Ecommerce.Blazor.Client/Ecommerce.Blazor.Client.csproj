@@ -15,7 +15,10 @@
 
     <ItemGroup>
       <Folder Include="Auth\" />
-      <Folder Include="Features\Auth\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Ecommerce.Shared\Ecommerce.Shared.csproj" />
     </ItemGroup>
 
 </Project>
