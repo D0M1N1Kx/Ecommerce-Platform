@@ -52,4 +52,25 @@ public class AuthApiService : IAuthApiService
 
         return result;
     }
+
+    public async Task<RefreshResponse> RefreshAsync(string refreshToken)
+    {
+        var request = new RefreshTokenRequest
+        {
+            RefreshToken = refreshToken
+        };
+
+        var response = await _http.PostAsJsonAsync("auth/refresh", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"Refresh failed: {error}");
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<RefreshResponse>()
+                     ?? throw new InvalidOperationException("Empty response from server");
+
+        return result;
+    }
 }

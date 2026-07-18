@@ -72,7 +72,7 @@ public class AuthService : IAuthService
         return new LoginResponse { AccessToken = token, RefreshToken = refreshToken };
     }
 
-    public async Task<string> RefreshAsync(string refreshToken)
+    public async Task<RefreshResponse> RefreshAsync(string refreshToken)
     {
         var hashedToken = _tokenService.HashToken(refreshToken);
 
@@ -91,6 +91,6 @@ public class AuthService : IAuthService
 
         var newAccessToken = _tokenService.GenerateAccessToken(storedToken.User);
 
-        return newAccessToken;
+        return new RefreshResponse { AccessToken = newAccessToken };
     }
 }

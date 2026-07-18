@@ -28,4 +28,22 @@ public class AuthState
         await _localStorage.RemoveItemAsync("refreshToken");
         OnChange?.Invoke();
     }
+
+    public async Task<bool> TryRefreshTokenAsync()
+    {
+        var refreshToken = await _localStorage.GetItemAsStringAsync("refreshToken");
+        if (refreshToken is null) return false;
+
+        try
+        {
+            var result = await _authApi.RefreshAsync(refreshToken);
+            await SetTokensAsync(result.AccessToken, refreshToken);
+            return true;
+        }
+        catch
+        {
+            await LogoutAsync();
+            return false;
+        }
+    }
 }

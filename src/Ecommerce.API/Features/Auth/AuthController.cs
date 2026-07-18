@@ -37,9 +37,6 @@ public class AuthController : ControllerBase
     {
         var newAccessToken = await _authService.RefreshAsync(request.RefreshToken);
 
-        return Ok(new
-        {
-            accessToken = newAccessToken
-        });
+        return Ok(newAccessToken);
     }
 }
