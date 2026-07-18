@@ -6,9 +6,23 @@ public class AuthState
 {
     private readonly ILocalStorageService _localStorage;
     private readonly IAuthApiService _authApi;
-
     public event Action? OnChange;
     private string? _accessToken;
+
+    public AuthState(ILocalStorageService localStorage, IAuthApiService authApi)
+    {
+        _localStorage = localStorage;
+        _authApi = authApi;
+    }
+
+    public async Task RegisterAsync(string username, string email, string password)
+        => await _authApi.RegisterAsync(username, email, password);
+
+    public async Task LoginAsync(string email, string password)
+    {
+        var result = await _authApi.LoginAsync(email, password);
+        await SetTokensAsync(result.AccessToken, result.RefreshToken);
+    }
 
     public async Task<string?> GetAccessTokenAsync()
         => _accessToken ??= await _localStorage.GetItemAsStringAsync("accessToken");
