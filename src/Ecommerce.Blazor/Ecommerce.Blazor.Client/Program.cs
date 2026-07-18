@@ -6,6 +6,11 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+builder.Services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5142/");
+});
+
 builder.Services.AddScoped<AuthState>();
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthStateProvider>();
 builder.Services.AddAuthorizationCore();
