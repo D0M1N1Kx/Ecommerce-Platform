@@ -20,4 +20,12 @@ public class AuthState
         await _localStorage.SetItemAsStringAsync("refreshToken", refresh);
         OnChange?.Invoke();
     }
+
+    public async Task LogoutAsync()
+    {
+        _accessToken = null;
+        await _localStorage.RemoveItemAsync("accessToken");
+        await _localStorage.RemoveItemAsync("refreshToken");
+        OnChange?.Invoke();
+    }
 }
