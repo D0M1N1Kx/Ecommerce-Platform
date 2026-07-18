@@ -71,4 +71,26 @@ public class AuthService : IAuthService
         
         return new LoginResponse { AccessToken = token, RefreshToken = refreshToken };
     }
+
+    public async Task<string> RefreshAsync(string refreshToken)
+    {
+        var hashedToken = _tokenService.HashToken(refreshToken);
+
+        var storedToken = await _db.RefreshTokens
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(x => x.TokenHash == hashedToken);
+
+        if (storedToken == null)
+            throw new UnauthorizedAccessException("Invalid refresh token");
+
+        if (storedToken.Revoked)
+            throw new UnauthorizedAccessException("Refresh token has been revoked");
+
+        if (storedToken.ExpiresAt < DateTime.UtcNow)
+            throw new UnauthorizedAccessException("Refresh token has expired");
+
+        var newAccessToken = _tokenService.GenerateAccessToken(storedToken.User);
+
+        return newAccessToken;
+    }
 }

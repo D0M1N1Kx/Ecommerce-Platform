@@ -1,3 +1,4 @@
+using Ecommerce.Shared.DTOs.Auth.Requests;
 using Microsoft.AspNetCore.Mvc;
 using LoginRequest = Ecommerce.Shared.DTOs.Auth.Requests.LoginRequest;
 using RegisterRequest = Ecommerce.Shared.DTOs.Auth.Requests.RegisterRequest;
@@ -29,5 +30,16 @@ public class AuthController : ControllerBase
         var login = await _authService.LoginAsync(request.Email, request.Password);
         
         return Ok(new { message = "Login successful.", accessToken = login.AccessToken, refreshToken = login.RefreshToken });
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(RefreshTokenRequest request)
+    {
+        var newAccessToken = await _authService.RefreshAsync(request.RefreshToken);
+
+        return Ok(new
+        {
+            accessToken = newAccessToken
+        });
     }
 }
