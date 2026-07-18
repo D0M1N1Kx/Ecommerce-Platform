@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
     {
         var login = await _authService.LoginAsync(request.Email, request.Password);
         
-        return Ok(new { message = "Login successful.", accessToken = login.AccessToken, refreshToken = login.RefreshToken });
+        return Ok(login);
     }
 
     [HttpPost("refresh")]

@@ -33,6 +33,23 @@ public class AuthApiService : IAuthApiService
 
     public async Task<LoginResponse> LoginAsync(string email, string password)
     {
-        throw new NotImplementedException();
+        var request = new LoginRequest
+        {
+            Email = email,
+            Password = password
+        };
+
+        var response = await _http.PostAsJsonAsync("auth/login", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"Login failed: {error}");
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<LoginResponse>()
+                     ?? throw new InvalidOperationException("Empty response from server");
+
+        return result;
     }
 }
