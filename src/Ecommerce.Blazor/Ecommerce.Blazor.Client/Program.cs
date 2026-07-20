@@ -7,20 +7,29 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+var apiAddress = new Uri("http://localhost:5142/");
+
+// -- HTTP CLIENT REGISTRATIONS --
 builder.Services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5142/");
+    client.BaseAddress = apiAddress;
 });
 
+builder.Services.AddHttpClient<ICategoryApiService, CategoryApiService>(client =>
+{
+    client.BaseAddress = apiAddress;
+});
+
+// -- STATE MANAGEMENT --
 builder.Services.AddScoped<AuthState>();
 builder.Services.AddScoped<CategoryState>();
-builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthStateProvider>();
-builder.Services.AddScoped<IAuthApiService, AuthApiService>();
-builder.Services.AddScoped<ICategoryApiService, CategoryApiService>();
 
+// -- AUTHENTICATION & AUTHORIZATION --
+builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthStateProvider>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddTransient<AuthTokenHandler>();
 
+// -- THIRD PARTY PACKAGES --
 builder.Services.AddBlazoredLocalStorage();
 
 await builder.Build().RunAsync();
