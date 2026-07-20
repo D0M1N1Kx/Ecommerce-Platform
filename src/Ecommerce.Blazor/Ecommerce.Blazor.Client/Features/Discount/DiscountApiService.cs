@@ -49,6 +49,20 @@ public class DiscountApiService : IDiscountApiService
 
     public async Task UpdateAsync(int id, string? name, decimal? discountPercentage, DateTime? validUntil)
     {
-        throw new NotImplementedException();
+        var request = new UpdateDiscountRequest
+        {
+            Id = id,
+            Name = name,
+            DiscountPercentage = discountPercentage,
+            ValidUntil = validUntil
+        };
+
+        var response = await _http.PatchAsJsonAsync("discount", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(error);
+        }
     }
 }
