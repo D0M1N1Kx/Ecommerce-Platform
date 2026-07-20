@@ -37,9 +37,9 @@ public class ProductController : ControllerBase
         return Created();
     }
 
-    [HttpPatch("{id:guid}")]
+    [HttpPatch]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateProductRequest request)
+    public async Task<IActionResult> UpdateAsync([FromBody] UpdateProductRequest request)
     {
         await _productService.UpdateAsync(request);
         return NoContent();
