@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using Ecommerce.Blazor.Client.Auth;
 using Ecommerce.Blazor.Client.Features.Auth;
+using Ecommerce.Blazor.Client.Features.Category;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -12,7 +13,11 @@ builder.Services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
 });
 
 builder.Services.AddScoped<AuthState>();
+builder.Services.AddScoped<CategoryState>();
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthStateProvider>();
+builder.Services.AddScoped<IAuthApiService, AuthApiService>();
+builder.Services.AddScoped<ICategoryApiService, CategoryApiService>();
+
 builder.Services.AddAuthorizationCore();
 builder.Services.AddTransient<AuthTokenHandler>();
 
