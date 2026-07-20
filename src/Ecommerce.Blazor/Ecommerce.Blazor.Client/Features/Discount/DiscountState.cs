@@ -25,6 +25,12 @@ public class DiscountState
         await _discountApi.CreateAsync(name, percentage, validUntil);
         await LoadDiscountsAsync();
     }
+
+    public async Task UpdateDiscountAsync(int id, string? name, decimal? percentage, DateTime? validUntil)
+    {
+        await _discountApi.UpdateAsync(id, name, percentage, validUntil);
+        await LoadDiscountsAsync();
+    }
     
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
