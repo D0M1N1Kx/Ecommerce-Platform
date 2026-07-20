@@ -29,7 +29,7 @@ public class DiscountApiService : IDiscountApiService
         return result;
     }
 
-    public async Task CreateAsync(string name, decimal discountPercentage, DateTime? validUntil = null)
+    public async Task CreateAsync(string name, decimal discountPercentage, DateTime? validUntil)
     {
         var request = new CreateDiscountRequest
         {
