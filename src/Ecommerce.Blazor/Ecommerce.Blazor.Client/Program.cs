@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using Ecommerce.Blazor.Client.Auth;
 using Ecommerce.Blazor.Client.Features.Auth;
 using Ecommerce.Blazor.Client.Features.Category;
+using Ecommerce.Blazor.Client.Features.Discount;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -20,9 +21,15 @@ builder.Services.AddHttpClient<ICategoryApiService, CategoryApiService>(client =
     client.BaseAddress = apiAddress;
 });
 
+builder.Services.AddHttpClient<IDiscountApiService, DiscountApiService>(client =>
+{
+    client.BaseAddress = apiAddress;
+});
+
 // -- STATE MANAGEMENT --
 builder.Services.AddScoped<AuthState>();
 builder.Services.AddScoped<CategoryState>();
+builder.Services.AddScoped<DiscountState>();
 
 // -- AUTHENTICATION & AUTHORIZATION --
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthStateProvider>();
