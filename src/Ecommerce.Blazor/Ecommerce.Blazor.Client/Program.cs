@@ -3,6 +3,7 @@ using Ecommerce.Blazor.Client.Auth;
 using Ecommerce.Blazor.Client.Features.Auth;
 using Ecommerce.Blazor.Client.Features.Category;
 using Ecommerce.Blazor.Client.Features.Discount;
+using Ecommerce.Blazor.Client.Features.Product;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -22,6 +23,11 @@ builder.Services.AddHttpClient<ICategoryApiService, CategoryApiService>(client =
 });
 
 builder.Services.AddHttpClient<IDiscountApiService, DiscountApiService>(client =>
+{
+    client.BaseAddress = apiAddress;
+});
+
+builder.Services.AddHttpClient<IProductApiService, ProductApiService>(client =>
 {
     client.BaseAddress = apiAddress;
 });
