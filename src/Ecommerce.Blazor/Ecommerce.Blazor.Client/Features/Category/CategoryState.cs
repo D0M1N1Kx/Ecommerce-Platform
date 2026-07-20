@@ -20,5 +20,11 @@ public class CategoryState
         NotifyStateChanged();
     }
 
+    public async Task CreateCategoryAsync(string name, string description)
+    {
+        await _categoryApi.CreateAsync(name, description);
+        await LoadCategoriesAsync();
+    }
+
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
