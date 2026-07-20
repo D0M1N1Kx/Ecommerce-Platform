@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Ecommerce.Shared.DTOs.Discount.Requests;
 using Ecommerce.Shared.DTOs.Discount.Responses;
 
 namespace Ecommerce.Blazor.Client.Features.Discount;
@@ -28,9 +29,22 @@ public class DiscountApiService : IDiscountApiService
         return result;
     }
 
-    public async Task CreateAsync(string name, decimal discountPercentage, DateTime? validUntil)
+    public async Task CreateAsync(string name, decimal discountPercentage, DateTime? validUntil = null)
     {
-        throw new NotImplementedException();
+        var request = new CreateDiscountRequest
+        {
+            Name = name,
+            DiscountPercentage = discountPercentage,
+            ValidUntil = validUntil
+        };
+
+        var response = await _http.PostAsJsonAsync("discount", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(error);
+        }
     }
 
     public async Task UpdateAsync(int id, string? name, decimal? discountPercentage, DateTime? validUntil)
