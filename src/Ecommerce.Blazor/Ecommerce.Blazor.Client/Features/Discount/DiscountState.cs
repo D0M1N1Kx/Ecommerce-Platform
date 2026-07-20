@@ -13,6 +13,12 @@ public class DiscountState
     {
         _discountApi = discountApi;
     }
+
+    public async Task LoadDiscountsAsync()
+    {
+        Discounts = await _discountApi.GetAllAsync();
+        NotifyStateChanged();
+    }
     
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
