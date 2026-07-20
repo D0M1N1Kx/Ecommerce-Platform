@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Ecommerce.Shared.DTOs.Category.Requests;
 using Ecommerce.Shared.DTOs.Category.Responses;
 
 namespace Ecommerce.Blazor.Client.Features.Category;
@@ -30,6 +31,18 @@ public class CategoryApiService : ICategoryApiService
 
     public async Task CreateAsync(string name, string description)
     {
-        throw new NotImplementedException();
+        var request = new CreateCategory
+        {
+            Name = name,
+            Description = description
+        };
+
+        var response = await _http.PostAsJsonAsync("category", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"Failed to create category: {error}");
+        }
     }
 }
