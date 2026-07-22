@@ -95,7 +95,25 @@ public class ProductApiService : IProductApiService
     public async Task UpdateAsync(Guid id, string? name, string? description, decimal? price, int? stock, string? sku, int? categoryId,
         int? discountId)
     {
-        throw new NotImplementedException();
+        var request = new UpdateProductRequest
+        {
+            ProductId = id,
+            Name = name,
+            Description = description,
+            Price = price,
+            Stock = stock,
+            Sku = sku,
+            CategoryId = categoryId,
+            DiscountId = discountId
+        };
+
+        var response = await _http.PatchAsJsonAsync("products", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(error);
+        }
     }
 
     public async Task DeleteAsync(Guid id)
