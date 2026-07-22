@@ -118,6 +118,12 @@ public class ProductApiService : IProductApiService
 
     public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var response = await _http.DeleteAsync($"products/{id}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(error);
+        }
     }
 }
