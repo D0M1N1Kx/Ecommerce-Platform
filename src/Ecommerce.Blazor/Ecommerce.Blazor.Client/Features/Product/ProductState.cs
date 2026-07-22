@@ -21,5 +21,11 @@ public class ProductState
         NotifyStateChanged();
     }
 
+    public async Task<ProductResponse> GetByIdAsync(Guid id)
+    {
+        var product = await _productApi.GetByIdAsync(id);
+        return product;
+    }
+
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
