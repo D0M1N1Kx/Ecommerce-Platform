@@ -43,5 +43,11 @@ public class ProductState
         await LoadProductsAsync();
     }
 
+    public async Task DeleteAsync(Guid id)
+    {
+        await _productApi.DeleteAsync(id);
+        await LoadProductsAsync();
+    }
+
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
