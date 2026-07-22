@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Ecommerce.Shared.DTOs.Products.Requests;
 using Ecommerce.Shared.DTOs.Products.Responses;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -71,7 +72,24 @@ public class ProductApiService : IProductApiService
     public async Task CreateAsync(string name, string description, decimal price, int stock, string sku, int categoryId,
         int? discountId)
     {
-        throw new NotImplementedException();
+        var request = new CreateProductRequest
+        {
+            Name = name,
+            Description = description,
+            Price = price,
+            Stock = stock,
+            Sku = sku,
+            CategoryId = categoryId,
+            DiscountId = discountId
+        };
+
+        var response = await _http.PostAsJsonAsync("products", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(error);
+        }
     }
 
     public async Task UpdateAsync(Guid id, string? name, string? description, decimal? price, int? stock, string? sku, int? categoryId,
