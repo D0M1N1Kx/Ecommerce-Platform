@@ -27,5 +27,12 @@ public class ProductState
         return product;
     }
 
+    public async Task CreateAsync(string name, string description, decimal price,
+        int stock, string sku, int categoryId, int? discountId)
+    {
+        await _productApi.CreateAsync(name, description, price, stock, sku, categoryId, discountId);
+        NotifyStateChanged();
+    }
+
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
