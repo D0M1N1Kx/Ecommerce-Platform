@@ -54,7 +54,18 @@ public class ProductApiService : IProductApiService
 
     public async Task<ProductResponse> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var response = await _http.GetAsync($"products/{id}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(error);
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<ProductResponse>()
+                     ?? throw new InvalidOperationException("Empty response from server");
+
+        return result;
     }
 
     public async Task CreateAsync(string name, string description, decimal price, int stock, string sku, int categoryId,
