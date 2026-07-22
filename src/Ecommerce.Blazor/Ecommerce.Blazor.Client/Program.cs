@@ -36,6 +36,7 @@ builder.Services.AddHttpClient<IProductApiService, ProductApiService>(client =>
 builder.Services.AddScoped<AuthState>();
 builder.Services.AddScoped<CategoryState>();
 builder.Services.AddScoped<DiscountState>();
+builder.Services.AddScoped<ProductState>();
 
 // -- AUTHENTICATION & AUTHORIZATION --
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthStateProvider>();
