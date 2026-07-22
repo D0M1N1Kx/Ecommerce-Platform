@@ -14,5 +14,12 @@ public class ProductState
         _productApi = productApi;
     }
 
+    public async Task LoadProductsAsync(string? searchTerm, int? categoryId, decimal? minPrice,
+        decimal? maxPrice, bool? inStockOnly, int page = 1, int pageSize = 10)
+    {
+        Products = await _productApi.GetAllAsync(page, pageSize, searchTerm, categoryId, minPrice, maxPrice, inStockOnly);
+        NotifyStateChanged();
+    }
+
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
