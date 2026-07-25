@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using Ecommerce.Blazor.Client.Auth;
 using Ecommerce.Blazor.Client.Features.Auth;
+using Ecommerce.Blazor.Client.Features.Cart;
 using Ecommerce.Blazor.Client.Features.Category;
 using Ecommerce.Blazor.Client.Features.Discount;
 using Ecommerce.Blazor.Client.Features.Product;
@@ -28,6 +29,11 @@ builder.Services.AddHttpClient<IDiscountApiService, DiscountApiService>(client =
 });
 
 builder.Services.AddHttpClient<IProductApiService, ProductApiService>(client =>
+{
+    client.BaseAddress = apiAddress;
+});
+
+builder.Services.AddHttpClient<ICartApiService, CartApiService>(client =>
 {
     client.BaseAddress = apiAddress;
 });
