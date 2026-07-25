@@ -25,6 +25,12 @@ public class CartState
         await _cartApi.AddItemAsync(productId, quantity);
         await GetAsync();
     }
+
+    public async Task ChangeQuantityAsync(Guid productId, int amount, bool isIncrement)
+    {
+        await _cartApi.ChangeQuantityAsync(productId, amount, isIncrement);
+        await GetAsync();
+    }
     
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
