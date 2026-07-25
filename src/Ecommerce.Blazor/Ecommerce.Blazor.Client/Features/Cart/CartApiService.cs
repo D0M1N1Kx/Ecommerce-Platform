@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using Ecommerce.Shared.DTOs.Cart.Responses;
 
 namespace Ecommerce.Blazor.Client.Features.Cart;
@@ -13,7 +14,18 @@ public class CartApiService : ICartApiService
     
     public async Task<CartResponse> GetAsync()
     {
-        throw new NotImplementedException();
+        var response = await _http.GetAsync("cart");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(error);
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<CartResponse>()
+            ?? throw new InvalidOperationException("Empty response from server");
+
+        return result;
     }
 
     public async Task AddItemAsync(Guid productId, int quantity = 1)
