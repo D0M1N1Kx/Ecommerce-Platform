@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Ecommerce.Shared.DTOs.Cart.Requests;
 using Ecommerce.Shared.DTOs.Cart.Responses;
 
 namespace Ecommerce.Blazor.Client.Features.Cart;
@@ -30,7 +31,19 @@ public class CartApiService : ICartApiService
 
     public async Task AddItemAsync(Guid productId, int quantity = 1)
     {
-        throw new NotImplementedException();
+        var request = new AddCartItemRequest
+        {
+            ProductId = productId,
+            Quantity = quantity
+        };
+
+        var response = await _http.PostAsJsonAsync("cart/items", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(error);
+        }
     }
 
     public async Task ChangeQuantityAsync(Guid productId, int amount, bool isIncrement)
