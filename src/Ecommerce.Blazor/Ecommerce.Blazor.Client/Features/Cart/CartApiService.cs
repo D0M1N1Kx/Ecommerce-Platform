@@ -66,7 +66,13 @@ public class CartApiService : ICartApiService
 
     public async Task DeleteItemAsync(Guid productId)
     {
-        throw new NotImplementedException();
+        var response = await _http.DeleteAsync($"cart/items/{productId}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(error);
+        }
     }
 
     public async Task ClearCartAsync()
