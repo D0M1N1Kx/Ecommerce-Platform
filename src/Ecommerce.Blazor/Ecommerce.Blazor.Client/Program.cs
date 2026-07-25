@@ -43,6 +43,7 @@ builder.Services.AddScoped<AuthState>();
 builder.Services.AddScoped<CategoryState>();
 builder.Services.AddScoped<DiscountState>();
 builder.Services.AddScoped<ProductState>();
+builder.Services.AddScoped<CartState>();
 
 // -- AUTHENTICATION & AUTHORIZATION --
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthStateProvider>();
