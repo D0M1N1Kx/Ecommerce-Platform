@@ -13,6 +13,12 @@ public class CartState
     {
         _cartApi = cartApi;
     }
+
+    public async Task GetAsync()
+    {
+        Cart = await _cartApi.GetAsync();
+        NotifyStateChanged();
+    }
     
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
