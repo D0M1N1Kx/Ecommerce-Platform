@@ -37,6 +37,12 @@ public class CartState
         await _cartApi.DeleteItemAsync(productId);
         await GetAsync();
     }
+
+    public async Task ClearCartAsync()
+    {
+        await _cartApi.ClearCartAsync();
+        await GetAsync();
+    }
     
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
