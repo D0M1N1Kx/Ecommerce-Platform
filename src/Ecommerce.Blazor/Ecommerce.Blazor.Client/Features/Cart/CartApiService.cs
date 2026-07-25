@@ -48,7 +48,20 @@ public class CartApiService : ICartApiService
 
     public async Task ChangeQuantityAsync(Guid productId, int amount, bool isIncrement)
     {
-        throw new NotImplementedException();
+        var request = new ChangeCartItemQuantityRequest
+        {
+            ProductId = productId,
+            Amount = amount,
+            IsIncrement = isIncrement
+        };
+
+        var response = await _http.PatchAsJsonAsync("cart/items", request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(error);
+        }
     }
 
     public async Task DeleteItemAsync(Guid productId)
