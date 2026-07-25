@@ -31,6 +31,12 @@ public class CartState
         await _cartApi.ChangeQuantityAsync(productId, amount, isIncrement);
         await GetAsync();
     }
+
+    public async Task DeleteItemAsync(Guid productId)
+    {
+        await _cartApi.DeleteItemAsync(productId);
+        await GetAsync();
+    }
     
     private void NotifyStateChanged() => OnChange?.Invoke();
 }
