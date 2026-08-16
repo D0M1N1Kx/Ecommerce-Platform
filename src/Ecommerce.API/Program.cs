@@ -16,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var jwtSettings = builder.Configuration
     .GetSection("JwtSettings")
-    .Get<JwtSettings>()!;
+    .Get<JwtSettings>()!
+    ?? throw new InvalidOperationException("JwtSettings configuration is missing!");
 
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddSingleton<ITokenService, TokenService>();
