@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Blazor", "src\Eco
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.Blazor.Client", "src\Ecommerce.Blazor\Ecommerce.Blazor.Client\Ecommerce.Blazor.Client.csproj", "{57600C5A-9C07-4F22-9DA0-16925F9E218E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.API.Tests", "Ecommerce.API.Tests\Ecommerce.API.Tests.csproj", "{1F7EB8EE-04C2-4FCE-9756-79A519A31DA4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce.API.Tests", "src/Ecommerce.API.Tests\Ecommerce.API.Tests.csproj", "{1F7EB8EE-04C2-4FCE-9756-79A519A31DA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
