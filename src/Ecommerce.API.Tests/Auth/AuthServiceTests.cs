@@ -75,4 +75,22 @@ public class AuthServiceTests
         
         Assert.NotEqual(loginResponse.AccessToken, refreshResponse.AccessToken);
     }
+    
+    [Fact]
+    public async Task RegisterAsync_ValidData_CreatesEmptyCartForUser()
+    {
+        var username = "testuser";
+        var email = "testuser@ecommerce.com";
+        var password = "VeryStrongPassword";
+
+        await _authService.RegisterAsync(username, email, password);
+
+        var userInDb = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+        Assert.NotNull(userInDb);
+        
+        var cart = await _db.Carts.FirstOrDefaultAsync(c => c.UserId == userInDb.Id);
+
+        Assert.NotNull(cart);
+        Assert.Equal(cart.UserId, userInDb.Id);
+    }
 }

@@ -1,6 +1,7 @@
 using Ecommerce.API.Data;
 using Ecommerce.API.Features.Auth;
 using Ecommerce.API.Features.Cart;
+using Ecommerce.API.Models;
 using Ecommerce.API.Settings;
 using Ecommerce.API.Shared.Services;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,6 @@ public class CartServiceTests
 {
     private readonly AppDbContext _db;
     private readonly CartService _cartService;
-    private readonly AuthService _authService;
 
     public CartServiceTests()
     {
@@ -20,37 +20,34 @@ public class CartServiceTests
             .Options;
 
         _db = new AppDbContext(options);
-        
-        var jwtSettings = new JwtSettings
-        {
-            SecretKey = "HE6gOs3hvkrjApAxvQxC3IBawseJEhPDUWWvRyyihD0=",
-            Issuer = "EcommerceAPI",
-            Audience = "EcommerceClient",
-            AccessTokenExpirationMinutes = 15,
-            RefreshTokenExpirationDays = 7
-        };
-
-        var tokenService = new TokenService(jwtSettings);
 
         _cartService = new CartService(_db);
-        _authService = new AuthService(_db, tokenService, jwtSettings);
     }
 
     [Fact]
-    public async Task RegisterAsync_ValidData_CreatesEmptyCartForUser()
+    public async Task GetAsync_ValidData_ReturnsUsersCart()
     {
-        var username = "testuser";
-        var email = "testuser@ecommerce.com";
-        var password = "VeryStrongPassword";
+        var user = new User 
+        { 
+            Username = "testuser", 
+            Email = "testuser@ecommerce.com", 
+            PasswordHash = "hash" 
+        };
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
 
-        await _authService.RegisterAsync(username, email, password);
-
-        var userInDb = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
-        Assert.NotNull(userInDb);
+        var cartInDb = new Models.Cart
+        { 
+            UserId = user.Id 
+        };
+        _db.Carts.Add(cartInDb);
+        await _db.SaveChangesAsync();
         
-        var cart = await _db.Carts.FirstOrDefaultAsync(c => c.UserId == userInDb.Id);
-
-        Assert.NotNull(cart);
-        Assert.Equal(cart.UserId, userInDb.Id);
+        var resultCart = await _cartService.GetAsync(user.Id);
+        var cartFromDb = await _db.Carts.FirstOrDefaultAsync(c => c.UserId == user.Id);
+        
+        Assert.NotNull(resultCart);
+        Assert.NotNull(cartFromDb);
+        Assert.Equal(user.Id, cartFromDb.UserId);
     }
 }
