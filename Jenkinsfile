@@ -25,7 +25,7 @@ pipeline {
                         string(credentialsId: 'JWT_SECRET_KEY', variable: 'JWT_SECRET')
                     ]) {
                     sh """
-            docker run -d --name ecommerce-api --network app-net -p 8081:8080 -e ConnectionStrings__DefaultConnection="${DB_CONN}" -e JwtSettings__SecretKey="${JWT_SECRET}" -e JwtSettings__Issuer="EcommerceAPI" -e JwtSettings__Audience="EcommerceFrontend" ecommerce-api:latest
+            docker run -d --name ecommerce-api --network app-net -p 8081:8080 -e ASPNETCORE_ENVIRONMENT="Development" -e ConnectionStrings__DefaultConnection="${DB_CONN}" -e JwtSettings__SecretKey="${JWT_SECRET}" -e JwtSettings__Issuer="EcommerceAPI" -e JwtSettings__Audience="EcommerceFrontend" ecommerce-api:latest
             """
                 }
             }
