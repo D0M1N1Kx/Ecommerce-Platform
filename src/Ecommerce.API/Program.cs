@@ -56,7 +56,19 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 using (var scope = app.Services.CreateScope())
 {
