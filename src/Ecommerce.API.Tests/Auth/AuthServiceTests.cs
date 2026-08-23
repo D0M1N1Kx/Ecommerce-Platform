@@ -55,4 +55,24 @@ public class AuthServiceTests
         var refreshTokenInDb = await _db.RefreshTokens.FirstOrDefaultAsync(rt => rt.UserId == userInDb.Id);
         Assert.NotNull(refreshTokenInDb);
     }
+
+    [Fact]
+    public async Task Refresh_WithValidToken_ReturnsNewAccessToken()
+    {
+        var username = "refreshUser";
+        var email = "refresh@ecommerce.com";
+        var password = "VeryStrongPassword";
+
+        await _authService.RegisterAsync(username, email, password);
+
+        var loginResponse = await _authService.LoginAsync(email, password);
+        var validRefreshToken = loginResponse.RefreshToken;
+
+        var refreshResponse = await _authService.RefreshAsync(validRefreshToken);
+
+        Assert.NotNull(refreshResponse);
+        Assert.False(string.IsNullOrEmpty(refreshResponse.AccessToken));
+        
+        Assert.NotEqual(loginResponse.AccessToken, refreshResponse.AccessToken);
+    }
 }
