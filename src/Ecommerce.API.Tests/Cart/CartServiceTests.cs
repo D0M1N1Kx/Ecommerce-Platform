@@ -24,27 +24,25 @@ public class CartServiceTests
         _cartService = new CartService(_db);
     }
 
-    [Fact]
-    public async Task GetAsync_ValidData_ReturnsUsersCart()
+    private async Task<(User user, Models.Cart cart)> CreateTestUserWithCartAsync()
     {
-        var user = new User 
-        { 
-            Username = "testuser", 
-            Email = "testuser@ecommerce.com", 
-            PasswordHash = "hash" 
-        };
+        var user = new User { Username = "test", Email = "test@test.com", PasswordHash = "hash" };
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
 
-        var cartInDb = new Models.Cart
-        { 
-            UserId = user.Id 
-        };
-        _db.Carts.Add(cartInDb);
+        var cart = new Models.Cart { UserId = user.Id };
+        _db.Carts.Add(cart);
         await _db.SaveChangesAsync();
+
+        return (user, cart);
+    }
+
+    [Fact]
+    public async Task GetAsync_ValidData_ReturnsUsersCart()
+    {
+        var (user, cartFromDb) = await CreateTestUserWithCartAsync();
         
         var resultCart = await _cartService.GetAsync(user.Id);
-        var cartFromDb = await _db.Carts.FirstOrDefaultAsync(c => c.UserId == user.Id);
         
         Assert.NotNull(resultCart);
         Assert.NotNull(cartFromDb);
