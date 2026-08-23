@@ -17,10 +17,17 @@ pipeline {
 
         stage('Deploy Container') {
             steps {
-                // Leállítjuk a régi konténert ha fut, és elindítjuk az újat az app-net hálózaton
                 sh 'docker stop ecommerce-api || true'
                 sh 'docker rm ecommerce-api || true'
-                sh 'docker run -d --name ecommerce-api --network app-net -e ConnectionStrings__DefaultConnection="Host=ecommerce-db;Database=ecommercedb;Username=postgres;Password=secretpassword" ecommerce-api:latest'
+
+                withCredentials([
+                        string(credentialsId: 'DB_CONNECTION_STRING', variable: 'DB_CONN'),
+                        string(credentialsId: 'JWT_SECRET_KEY', variable: 'JWT_SECRET')
+                    ]) {
+                    sh """
+            docker run -d --name ecommerce-api --network app-net -p 8081:8080 -e ConnectionStrings__DefaultConnection="${DB_CONN}" -e JwtSettings__SecretKey="${JWT_SECRET}" -e JwtSettings__Issuer="EcommerceAPI" -e JwtSettings__Audience="EcommerceFrontend" ecommerce-api:latest
+            """
+                }
             }
         }
     }
