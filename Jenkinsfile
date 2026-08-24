@@ -30,5 +30,21 @@ pipeline {
                 }
             }
         }
+
+        stage('Build Blazor Docker Image') {
+            steps {
+                sh 'docker build -f Dockerfile.blazor -t ecommerce-blazor:latest .'
+            }
+        }
+
+        stage('Deploy Blazor Container') {
+            steps {
+                sh 'docker stop ecommerce-blazor || true'
+                sh 'docker rm ecommerce-blazor || true'
+                sh '''
+            docker run -d --name ecommerce-blazor --network app-net -p 8082:8080 -e ASPNETCORE_ENVIRONMENT="Development" ecommerce-blazor:latest
+        '''
+            }
+        }
     }
 }

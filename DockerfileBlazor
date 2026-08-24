@@ -1,0 +1,22 @@
+﻿# 1. BUILD STAGE
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /app
+
+COPY ["src/Ecommerce.Blazor/Ecommerce.Blazor/Ecommerce.Blazor.csproj", "src/Ecommerce.Blazor/Ecommerce.Blazor/"]
+COPY ["src/Ecommerce.Blazor/Ecommerce.Blazor.Client/Ecommerce.Blazor.Client.csproj", "src/Ecommerce.Blazor/Ecommerce.Blazor.Client/"]
+COPY ["src/Ecommerce.Shared/Ecommerce.Shared.csproj", "src/Ecommerce.Shared/"]
+
+RUN dotnet restore "src/Ecommerce.Blazor/Ecommerce.Blazor/Ecommerce.Blazor.csproj"
+
+COPY . .
+RUN dotnet publish "src/Ecommerce.Blazor/Ecommerce.Blazor/Ecommerce.Blazor.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# 2. RUNTIME STAGE
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "Ecommerce.Blazor.dll"]
