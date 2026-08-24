@@ -33,7 +33,7 @@ pipeline {
 
         stage('Build Blazor Docker Image') {
             steps {
-                sh 'docker build -f Dockerfile.blazor -t ecommerce-blazor:latest .'
+                sh 'docker build -f DockerfileBlazor -t ecommerce-blazor:latest .'
             }
         }
 
