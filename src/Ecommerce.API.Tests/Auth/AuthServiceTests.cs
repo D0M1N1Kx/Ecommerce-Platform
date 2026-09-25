@@ -76,6 +76,7 @@ public class AuthServiceTests
         
         Assert.NotEqual(loginResponse.AccessToken, refreshResponse.AccessToken);
         Assert.NotEqual(loginResponse.RefreshToken, refreshResponse.RefreshToken);
+        Assert.NotEqual(loginResponse.AccessToken, refreshResponse.RefreshToken);
     }
     
     [Fact]
