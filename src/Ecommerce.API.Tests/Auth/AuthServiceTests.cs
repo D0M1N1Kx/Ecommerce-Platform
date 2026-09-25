@@ -57,7 +57,7 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task Refresh_WithValidToken_ReturnsNewAccessToken()
+    public async Task Refresh_WithValidToken_ReturnsNewTokens()
     {
         var username = "refreshUser";
         var email = "refresh@ecommerce.com";
@@ -72,8 +72,10 @@ public class AuthServiceTests
 
         Assert.NotNull(refreshResponse);
         Assert.False(string.IsNullOrEmpty(refreshResponse.AccessToken));
+        Assert.False(string.IsNullOrEmpty(refreshResponse.RefreshToken));
         
         Assert.NotEqual(loginResponse.AccessToken, refreshResponse.AccessToken);
+        Assert.NotEqual(loginResponse.RefreshToken, refreshResponse.RefreshToken);
     }
     
     [Fact]
