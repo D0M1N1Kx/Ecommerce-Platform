@@ -51,7 +51,7 @@ public class AuthState
         try
         {
             var result = await _authApi.RefreshAsync(refreshToken);
-            await SetTokensAsync(result.AccessToken, refreshToken);
+            await SetTokensAsync(result.AccessToken, result.RefreshToken);
             return true;
         }
         catch
