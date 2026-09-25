@@ -91,6 +91,22 @@ public class AuthService : IAuthService
 
         var newAccessToken = _tokenService.GenerateAccessToken(storedToken.User);
 
-        return new RefreshResponse { AccessToken = newAccessToken };
+        _db.RefreshTokens.Remove(storedToken);
+        
+        var rawRefreshToken = _tokenService.GenerateRefreshToken();
+        
+        var newRefreshToken = new RefreshToken
+        {
+            UserId = storedToken.UserId,
+            TokenHash = _tokenService.HashToken(rawRefreshToken),
+            ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays),
+            CreatedAt = DateTime.UtcNow,
+            Revoked = false
+        };
+        
+        _db.RefreshTokens.Add(newRefreshToken);
+        await _db.SaveChangesAsync();
+
+        return new RefreshResponse { AccessToken = newAccessToken, RefreshToken = rawRefreshToken };
     }
 }
