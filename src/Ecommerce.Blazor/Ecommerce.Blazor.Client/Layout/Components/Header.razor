@@ -1,13 +1,14 @@
 @using Ecommerce.Blazor.Client.Features.Auth
 @inject AuthState AuthState
 @implements IDisposable
+@inject NavigationManager Navigation
 
 <!-- HEADER (logo + searchbar + icons) -->
 <div class="flex flex-col py-4 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200 mb-2">
     
     <div class="flex flex-row items-center justify-between w-full">
         <!-- LOGO -->
-        <div class="flex flex-row gap-2 items-center">
+        <div class="flex flex-row gap-2 items-center cursor-pointer" @onclick="NavigateToHome">
             <span class="material-symbols-outlined">
                 shopping_cart
             </span>
@@ -26,16 +27,16 @@
     
         <!-- ICONS -->
         <div class="text-gray-700 flex flex-row gap-4 items-center">
-            <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">favorite</span>
+            <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer" @onclick="NavigateToFavorites">favorite</span>
             @if (!isLoggedIn)
             {
-                <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">login</span>
+                <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer" @onclick="NavigateToLogin">login</span>
             }
             else
             {
-                <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">account_circle</span>
+                <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer" @onclick="NavigateToAccount">account_circle</span>
             }
-            <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">shopping_cart</span>
+            <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer" @onclick="NavigateToCart">shopping_cart</span>
         </div>
     </div>
     
@@ -70,6 +71,31 @@
     private async void OnAuthStateChanged()
     {
         await CheckLoginStatusAsync();
+    }
+
+    private void NavigateToLogin()
+    {
+        Navigation.NavigateTo("/login");
+    }
+
+    private void NavigateToFavorites()
+    {
+        Navigation.NavigateTo("/favorites");
+    }
+
+    private void NavigateToCart()
+    {
+        Navigation.NavigateTo("/cart");
+    }
+
+    private void NavigateToAccount()
+    {
+        Navigation.NavigateTo("/account");
+    }
+
+    private void NavigateToHome()
+    {
+        Navigation.NavigateTo("/");
     }
     
     /*
