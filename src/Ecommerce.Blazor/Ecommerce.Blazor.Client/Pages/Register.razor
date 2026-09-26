@@ -1,0 +1,69 @@
+@page "/register"
+@using Ecommerce.Blazor.Client.Components
+@using Ecommerce.Blazor.Client.Features.Auth;
+@inject AuthState AuthState;
+@inject NavigationManager Navigation
+
+<PageTitle>Register</PageTitle>
+
+<div class="w-full flex justify-center sm:py-10">
+    <div class="w-full sm:max-w-md bg-white sm:shadow-lg sm:border sm:border-gray-100 sm:rounded-2xl p-6 flex-1 flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+            <span class="font-bold text-blue-600">GET STARTED</span>
+            <span class="font-bold text-xl">Create your account</span>
+            <span>Join NovaShop today and enjoy a better shopping experience.</span>
+        </div>
+    
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div>
+                <ErrorBox Error="@errorMessage" />
+            </div>
+        }
+        
+        <div class="flex flex-col gap-4">
+            <CustomInput Label="Username" Placeholder="Username" Type="text" Icon="person" @bind-Value="username"/>
+            <CustomInput Label="Email address" Placeholder="you@example.com" Type="email" Icon="mail" @bind-Value="email"/>
+            <CustomInput Label="Password" Placeholder="Enter your password" Type="password" Icon="lock" @bind-Value="password"/>
+        </div>
+    
+        <div>
+            <button class="w-full bg-blue-500 text-white font-bold py-1.5 rounded-lg" @onclick="HandleRegister">Register</button>
+        </div>
+    
+        <div class="w-full h-px bg-gray-300"></div>
+    
+        <div class="self-center">
+            <span>Already have an account?</span>
+            <a class="text-blue-600 underline" href="/login">Log in</a>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string username = "";
+    private string email = "";
+    private string password = "";
+    private string? errorMessage;
+
+    private async Task HandleRegister()
+    {
+        errorMessage = null;
+
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(username))
+        {
+            errorMessage = "Please fill all field.";
+            return;
+        }
+
+        try
+        {
+            await AuthState.RegisterAsync(username, email, password);
+            Navigation.NavigateTo("/login");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+}
