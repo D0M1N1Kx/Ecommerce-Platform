@@ -21,7 +21,9 @@
         <div class="hidden md:block text-gray-400 flex-1 max-w-xl mx-8">
             <div class="flex items-center w-full bg-gray-100 border border-gray-300 rounded-full px-4 py-2 gap-2">
                 <span class="material-symbols-outlined">search</span>
-                <input type="text" placeholder="Search..." class="w-full bg-transparent text-sm text-gray-700 focus:outline-none" />
+                <form @onsubmit="HandleSearch">
+                    <input type="text" placeholder="Search..." class="w-full bg-transparent text-sm text-gray-700 focus:outline-none" @bind="searchTerm" @bind:event="oninput" />
+                </form>
             </div>
         </div>
     
@@ -44,13 +46,16 @@
         <!-- SEARCHBAR FOR MOBILE -->
         <div class="flex lg:hidden md:hidden bg-gray-100 items-center w-full border border-gray-300 rounded-full px-4 py-2 gap-2">
             <span class="material-symbols-outlined">search</span>
-            <input type="text" placeholder="Search..." class="w-full bg-transparent text-sm text-gray-700 focus:outline-none">
+            <form @onsubmit="HandleSearch">
+                <input type="text" placeholder="Search..." class="w-full bg-transparent text-sm text-gray-700 focus:outline-none" @bind="searchTerm" @bind:event="oninput" />
+            </form>
         </div>
     </div>
     
 </div>
 @code {
     private bool isLoggedIn;
+    private string searchTerm = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -66,6 +71,12 @@
         var token = await AuthState.GetAccessTokenAsync();
         isLoggedIn = !string.IsNullOrEmpty(token);
         StateHasChanged();
+    }
+
+    private void HandleSearch()
+    {
+        if(!string.IsNullOrEmpty(searchTerm)) 
+            Navigation.NavigateTo($"/products?search={Uri.EscapeDataString(searchTerm)}");
     }
 
     private async void OnAuthStateChanged()
