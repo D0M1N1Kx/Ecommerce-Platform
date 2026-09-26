@@ -2,8 +2,9 @@
 @using Ecommerce.Blazor.Client.Components
 @using Ecommerce.Blazor.Client.Features.Auth;
 @inject AuthState AuthState;
+@inject NavigationManager Navigation
 
-<PageTitle>AUTH</PageTitle>
+<PageTitle>Login</PageTitle>
 
 <div class="w-full flex justify-center sm:py-10">
     <div class="w-full sm:max-w-md bg-white sm:shadow-lg sm:border sm:border-gray-100 sm:rounded-2xl p-6 flex-1 flex flex-col gap-4">
@@ -13,18 +14,25 @@
             <span>Enter your details below to access your account and continue shopping.</span>
         </div>
     
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div>
+                <ErrorBox Error="@errorMessage" />
+            </div>
+        }
+        
         <div class="flex flex-col gap-4">
-            <CustomInput Label="Email address" Placeholder="you@example.com" Type="email" Icon="mail"/>
-            <CustomInput Label="Password" Placeholder="Enter your password" Type="password" Icon="lock"/>
+            <CustomInput Label="Email address" Placeholder="you@example.com" Type="email" Icon="mail" @bind-Value="email" />
+            <CustomInput Label="Password" Placeholder="Enter your password" Type="password" Icon="lock" @bind-Value="password" />
         </div>
     
         <div class="flex flex-row justify-between">
-            <div><input type="checkbox" /> Remember me</div>
+            <div><input type="checkbox" checked="checked"/> Remember me</div>
             <a href="/forgot-password" class="text-blue-600">Forgot password?</a>
         </div>
     
         <div>
-            <button class="w-full bg-blue-500 text-white font-bold py-1.5 rounded-lg">Log in</button>
+            <button class="w-full bg-blue-500 text-white font-bold py-1.5 rounded-lg" @onclick="HandleLogin">Log in</button>
         </div>
     
         <div class="w-full h-px bg-gray-300"></div>
@@ -36,49 +44,25 @@
     </div>
 </div>
 
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <p style="color: red;">@errorMessage</p><br/>
-}
-
-@if (isLoggedIn)
-{
-    <p style="color: green;">Successfull login!</p><br/>
-    <p>Access Token: @accessToken</p><br/>
-}
-
 @code {
     private string email = "";
-    private string username = "";
     private string password = "";
     private string? errorMessage;
-    private bool isLoggedIn;
-    private string? accessToken;
 
     private async Task HandleLogin()
     {
         errorMessage = null;
-        isLoggedIn = false;
+
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        {
+            errorMessage = "Please fill all field.";
+            return;
+        }
 
         try
         {
             await AuthState.LoginAsync(email, password);
-            isLoggedIn = true;
-            accessToken = await AuthState.GetAccessTokenAsync();
-        }
-        catch (Exception ex)
-        {
-            errorMessage = ex.Message;
-        }
-    }
-
-    private async Task HandleRegister()
-    {
-        errorMessage = null;
-
-        try
-        {
-            await AuthState.RegisterAsync(username, email, password);
+            Navigation.NavigateTo("/");
         }
         catch (Exception ex)
         {
