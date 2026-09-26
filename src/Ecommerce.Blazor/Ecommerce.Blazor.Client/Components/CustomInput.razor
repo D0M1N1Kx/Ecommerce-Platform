@@ -1,0 +1,52 @@
+<div class="flex flex-col gap-1.5 w-full">
+    
+<div class="flex items-center w-full bg-white border border-gray-300 rounded-xl px-4 py-1 gap-2.5 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
+    @if (!string.IsNullOrEmpty(Icon))
+    {
+        <span class="material-symbols-outlined text-gray-400 text-xl">@Icon</span>
+    }
+        
+    <input type="@GetInputType()"
+           placeholder="@Placeholder"
+           value="@Value"
+           @oninput="OnInputChanged"
+           class="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none" />
+
+    @if (isPasswordType)
+    {
+        <button type="button" @onclick="TogglePasswordVisibility" class="text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer">
+            <span class="material-symbols-outlined text-xl">
+                @(isPasswordVisible ? "visibility_off" : "visibility")
+            </span>
+        </button>
+    }
+</div>
+</div>
+
+@code {
+    [Parameter] public string Placeholder { get; set; } = string.Empty;
+    [Parameter] public string Type { get; set; } = "text";
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    private bool isPasswordVisible = false;
+    private bool isPasswordType => Type == "password";
+
+    private string GetInputType()
+    {
+        if (!isPasswordType && !isPasswordVisible) return Type;
+        return isPasswordVisible ? "text" : "password";
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        isPasswordVisible = !isPasswordVisible;
+    }
+
+    private async Task OnInputChanged(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString();
+        await ValueChanged.InvokeAsync(Value);
+    }
+}

@@ -1,0 +1,78 @@
+@page "/login"
+@using Ecommerce.Blazor.Client.Components
+@using Ecommerce.Blazor.Client.Features.Auth;
+@inject AuthState AuthState;
+
+<PageTitle>AUTH</PageTitle>
+
+<h1>AUTH TEST</h1>
+
+<div>
+    <label for="email">Email:</label>
+    <input type="email" id="email" @bind="email" class="border border-black" />
+    <CustomInput Icon="login" Placeholder="email" Type="email"></CustomInput>
+</div>
+
+<div>
+    <label for="username">Username (register):</label>
+    <input type="text" id="username" @bind="username" class="border border-black" />
+</div>
+
+<div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" @bind="password" class="border border-black" />
+</div>
+
+<button id="btnLogin" @onclick="HandleLogin" class="border border-black">Login</button>
+<button id="btnRegister" @onclick="HandleRegister" class="border border-black">Register</button>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color: red;">@errorMessage</p><br/>
+}
+
+@if (isLoggedIn)
+{
+    <p style="color: green;">Successfull login!</p><br/>
+    <p>Access Token: @accessToken</p><br/>
+}
+
+@code {
+    private string email = "";
+    private string username = "";
+    private string password = "";
+    private string? errorMessage;
+    private bool isLoggedIn;
+    private string? accessToken;
+
+    private async Task HandleLogin()
+    {
+        errorMessage = null;
+        isLoggedIn = false;
+
+        try
+        {
+            await AuthState.LoginAsync(email, password);
+            isLoggedIn = true;
+            accessToken = await AuthState.GetAccessTokenAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task HandleRegister()
+    {
+        errorMessage = null;
+
+        try
+        {
+            await AuthState.RegisterAsync(username, email, password);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+}
