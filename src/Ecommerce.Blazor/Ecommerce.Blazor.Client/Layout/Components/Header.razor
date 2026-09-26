@@ -1,5 +1,41 @@
-<h3>Header</h3>
-
+<!-- HEADER (logo + searchbar + icons) -->
+<div class="flex flex-col py-4 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200">
+    
+    <div class="flex flex-row items-center justify-between w-full">
+        <!-- LOGO -->
+        <div class="flex flex-row gap-2 items-center">
+            <span class="material-symbols-outlined">
+                shopping_cart
+            </span>
+            <div class="text-2xl font-bold text-black">
+                NovaShop
+            </div>
+        </div>
+    
+        <!-- SEARCHBAR -->
+        <div class="hidden md:block text-gray-400 flex-1 max-w-xl mx-8">
+            <div class="flex items-center w-full bg-gray-100 border border-gray-300 rounded-full px-4 py-2 gap-2">
+                <span class="material-symbols-outlined">search</span>
+                <input type="text" placeholder="Search..." class="w-full bg-transparent text-sm text-gray-700 focus:outline-none" />
+            </div>
+        </div>
+    
+        <!-- ICONS -->
+        <div class="text-gray-700 flex flex-row gap-4 items-center">
+            <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">account_circle</span>
+            <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">shopping_cart</span>
+        </div>
+    </div>
+    
+    <div class="block md:hidden mt-3 text-gray-400">
+        <!-- SEARCHBAR -->
+        <div class="flex lg:hidden md:hidden bg-gray-100 items-center w-full border border-gray-300 rounded-full px-4 py-2 gap-2">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search..." class="w-full bg-transparent text-sm text-gray-700 focus:outline-none">
+        </div>
+    </div>
+    
+</div>
 @code {
     
 }
