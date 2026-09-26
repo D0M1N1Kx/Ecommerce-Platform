@@ -25,6 +25,7 @@
             <CustomInput Label="Username" Placeholder="Username" Type="text" Icon="person" @bind-Value="username"/>
             <CustomInput Label="Email address" Placeholder="you@example.com" Type="email" Icon="mail" @bind-Value="email"/>
             <CustomInput Label="Password" Placeholder="Enter your password" Type="password" Icon="lock" @bind-Value="password"/>
+            <CustomInput Label="Confirm password" Placeholder="Confirm your password" Type="password" Icon="lock" @bind-Value="confirmPassword"/>
         </div>
     
         <div>
@@ -44,15 +45,22 @@
     private string username = "";
     private string email = "";
     private string password = "";
+    private string confirmPassword = "";
     private string? errorMessage;
 
     private async Task HandleRegister()
     {
         errorMessage = null;
 
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(username))
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(confirmPassword))
         {
             errorMessage = "Please fill all field.";
+            return;
+        }
+
+        if (password != confirmPassword)
+        {
+            errorMessage = "Passwords do not match.";
             return;
         }
 
