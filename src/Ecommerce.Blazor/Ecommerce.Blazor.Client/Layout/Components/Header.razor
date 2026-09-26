@@ -1,3 +1,7 @@
+@using Ecommerce.Blazor.Client.Features.Auth
+@inject AuthState AuthState
+@implements IDisposable
+
 <!-- HEADER (logo + searchbar + icons) -->
 <div class="flex flex-col py-4 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200 mb-2">
     
@@ -23,7 +27,14 @@
         <!-- ICONS -->
         <div class="text-gray-700 flex flex-row gap-4 items-center">
             <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">favorite</span>
-            <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">account_circle</span>
+            @if (!isLoggedIn)
+            {
+                <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">login</span>
+            }
+            else
+            {
+                <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">account_circle</span>
+            }
             <span class="material-symbols-outlined hover:text-blue-600 cursor-pointer">shopping_cart</span>
         </div>
     </div>
@@ -38,5 +49,38 @@
     
 </div>
 @code {
+    private bool isLoggedIn;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            AuthState.OnChange += OnAuthStateChanged;
+            await CheckLoginStatusAsync();
+        }
+    }
+
+    private async Task CheckLoginStatusAsync()
+    {
+        var token = await AuthState.GetAccessTokenAsync();
+        isLoggedIn = !string.IsNullOrEmpty(token);
+        StateHasChanged();
+    }
+
+    private async void OnAuthStateChanged()
+    {
+        await CheckLoginStatusAsync();
+    }
     
+    /*
+    private async Task HandleLogout()
+    {
+        await AuthState.LogoutAsync();
+    }
+    */
+
+    public void Dispose()
+    {
+        AuthState.OnChange -= OnAuthStateChanged;
+    }
 }
