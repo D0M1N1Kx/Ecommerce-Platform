@@ -5,3 +5,7 @@ obj/
 bin/
 
 **/appsettings.Development.json
+
+# Antigravity CLI local files
+.antigravity/
+.agent/
