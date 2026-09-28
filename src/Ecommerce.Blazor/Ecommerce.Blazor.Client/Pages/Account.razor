@@ -1,0 +1,13 @@
+@page "/account"
+@using Ecommerce.Blazor.Client.Features.Auth
+@inject AuthState AuthState;
+
+<button class="border border-black max-w-24 bg-white" @onclick="HandleLogout">Logout</button>
+
+@code {
+
+    private async Task HandleLogout()
+    {
+        await AuthState.LogoutAsync();
+    }
+}
