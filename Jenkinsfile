@@ -19,14 +19,14 @@ pipeline {
             steps {
                 sh 'docker stop ecommerce-api || true'
                 sh 'docker rm ecommerce-api || true'
-
+        
                 withCredentials([
                         string(credentialsId: 'DB_CONNECTION_STRING', variable: 'DB_CONN'),
                         string(credentialsId: 'JWT_SECRET_KEY', variable: 'JWT_SECRET')
                     ]) {
                     sh """
-            docker run -d --name ecommerce-api --network app-net -p 8081:8080 -e ASPNETCORE_ENVIRONMENT="Development" -e ConnectionStrings__DefaultConnection="${DB_CONN}" -e JwtSettings__SecretKey="${JWT_SECRET}" -e JwtSettings__Issuer="EcommerceAPI" -e JwtSettings__Audience="EcommerceFrontend" ecommerce-api:latest
-            """
+                    docker run -d --name ecommerce-api --restart always --network app-net -p 8080:8080 -e ASPNETCORE_ENVIRONMENT="Development" -e ConnectionStrings__DefaultConnection="${DB_CONN}" -e JwtSettings__SecretKey="${JWT_SECRET}" -e JwtSettings__Issuer="EcommerceAPI" -e JwtSettings__Audience="EcommerceFrontend" ecommerce-api:latest
+                    """
                 }
             }
         }
@@ -42,8 +42,8 @@ pipeline {
                 sh 'docker stop ecommerce-blazor || true'
                 sh 'docker rm ecommerce-blazor || true'
                 sh '''
-            docker run -d --name ecommerce-blazor --network app-net -p 8082:8080 -e ASPNETCORE_ENVIRONMENT="Development" ecommerce-blazor:latest
-        '''
+                    docker run -d --name ecommerce-blazor --restart always --network app-net -p 8081:8080 -e ASPNETCORE_ENVIRONMENT="Development" ecommerce-blazor:latest
+                '''
             }
         }
     }
