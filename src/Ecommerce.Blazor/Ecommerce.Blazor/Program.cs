@@ -8,7 +8,7 @@ using Ecommerce.Blazor.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var apiAddress = new Uri("http://localhost:5142/");
+var apiAddress = new Uri("https://ecommerce-api.zenithfactory.dev");
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

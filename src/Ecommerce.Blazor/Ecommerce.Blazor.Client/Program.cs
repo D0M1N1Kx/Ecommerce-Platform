@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-var apiAddress = new Uri("http://localhost:5142/");
+var apiAddress = new Uri("https://ecommerce-api.zenithfactory.dev");
 
 // -- HTTP CLIENT REGISTRATIONS --
 builder.Services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
