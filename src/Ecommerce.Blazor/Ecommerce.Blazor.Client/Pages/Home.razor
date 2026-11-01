@@ -1,5 +1,7 @@
 ﻿@page "/"
 @using Ecommerce.Blazor.Client.Components
+@using Ecommerce.Blazor.Client.Features.Category
+@inject CategoryState CategoryState
 
 <PageTitle>Home</PageTitle>
 <div class="grid grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 w-full">
@@ -12,5 +14,8 @@
 </div>
 
 @code {
-    
+    protected override async Task OnInitializedAsync()
+    {
+        await CategoryState.LoadCategoriesAsync();
+    }
 }
