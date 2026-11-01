@@ -19,4 +19,8 @@ public class Category
     [MaxLength(255)]
     [Column("description", TypeName = "text")]
     public string Description { get; set; } = string.Empty;
+    
+    [MaxLength(255)]
+    [Column("img_url")]
+    public string ImgUrl { get; set; } = string.Empty;
 }

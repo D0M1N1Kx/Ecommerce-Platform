@@ -85,8 +85,15 @@ namespace Ecommerce.API.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<string>("ImgUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("img_url");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -144,6 +151,7 @@ namespace Ecommerce.API.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("description");
 
@@ -267,7 +275,7 @@ namespace Ecommerce.API.Migrations
             modelBuilder.Entity("Ecommerce.API.Models.CartItem", b =>
                 {
                     b.HasOne("Ecommerce.API.Models.Cart", "Cart")
-                        .WithMany()
+                        .WithMany("CartItems")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -309,6 +317,11 @@ namespace Ecommerce.API.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Ecommerce.API.Models.Cart", b =>
+                {
+                    b.Navigation("CartItems");
                 });
 #pragma warning restore 612, 618
         }

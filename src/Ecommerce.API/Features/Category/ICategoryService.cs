@@ -6,7 +6,7 @@ public interface ICategoryService
 {
     Task<List<CategoryResponse>> GetAllCategories();
 
-    Task CreateCategory(string name, string description);
+    Task CreateCategory(string name, string description, IFormFile image);
     
     private static CategoryResponse MapToResponse(Models.Category c)
     {

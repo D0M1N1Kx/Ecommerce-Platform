@@ -24,9 +24,9 @@ public class CategoryController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> CreateCategory(CreateCategory request)
+    public async Task<IActionResult> CreateCategory(CreateCategory request, IFormFile image)
     {
-        await _categoryService.CreateCategory(request.Name, request.Description);
+        await _categoryService.CreateCategory(request.Name, request.Description, image);
         return Created();
     }
 }

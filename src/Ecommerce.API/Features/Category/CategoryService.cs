@@ -31,16 +31,38 @@ public class CategoryService : ICategoryService
         return categories;
     }
 
-    public async Task CreateCategory(string name, string description)
+    public async Task CreateCategory(string name, string description, IFormFile image)
     {
         var isCategoryExists = await _db.Categories.AnyAsync(x => x.Name == name);
         if (isCategoryExists)
             throw new DuplicateNameException("Category with that name already exists");
 
+        string imagePath = null;
+
+        if (image != null && image.Length > 0)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "categories");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(image.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
+            
+            imagePath = $"/images/categories/{uniqueFileName}";
+        }
+        
         var category = new Models.Category
         {
             Name = name,
-            Description = description
+            Description = description,
+            ImgUrl = imagePath
         };
         
         _db.Categories.Add(category);

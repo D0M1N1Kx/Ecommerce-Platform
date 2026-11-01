@@ -16,7 +16,8 @@ public static class MappingExtension
         {
             Id = category.Id,
             Name = category.Name,
-            Description = category.Description
+            Description = category.Description,
+            ImgUrl = category.ImgUrl
         };
     }
 
