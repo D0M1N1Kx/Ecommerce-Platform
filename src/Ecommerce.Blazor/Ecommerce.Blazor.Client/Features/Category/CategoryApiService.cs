@@ -1,6 +1,7 @@
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Ecommerce.Shared.DTOs.Category.Requests;
 using Ecommerce.Shared.DTOs.Category.Responses;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Ecommerce.Blazor.Client.Features.Category;
 
@@ -29,15 +30,22 @@ public class CategoryApiService : ICategoryApiService
         return result;
     }
 
-    public async Task CreateAsync(string name, string description)
+    public async Task CreateAsync(string name, string description, IBrowserFile imageFile)
     {
-        var request = new CreateCategory
-        {
-            Name = name,
-            Description = description
-        };
+        using var content = new MultipartFormDataContent();
+        
+        content.Add(new StringContent(name), "Name");
+        content.Add(new StringContent(description), "Description");
 
-        var response = await _http.PostAsJsonAsync("category", request);
+        var maxAllowedSize = 5 * 1024 * 1024; // 5 MB
+        var fileStream = imageFile.OpenReadStream(maxAllowedSize);
+        var fileContent = new StreamContent(fileStream);
+
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(imageFile.ContentType);
+        
+        content.Add(fileContent, "image", imageFile.Name);
+
+        var response = await _http.PostAsJsonAsync("category", content);
 
         if (!response.IsSuccessStatusCode)
         {

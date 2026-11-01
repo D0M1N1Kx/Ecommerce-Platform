@@ -1,4 +1,5 @@
 using Ecommerce.Shared.DTOs.Category.Responses;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Ecommerce.Blazor.Client.Features.Category;
 
@@ -20,9 +21,9 @@ public class CategoryState
         NotifyStateChanged();
     }
 
-    public async Task CreateCategoryAsync(string name, string description)
+    public async Task CreateCategoryAsync(string name, string description, IBrowserFile image)
     {
-        await _categoryApi.CreateAsync(name, description);
+        await _categoryApi.CreateAsync(name, description, image);
         await LoadCategoriesAsync();
     }
 
