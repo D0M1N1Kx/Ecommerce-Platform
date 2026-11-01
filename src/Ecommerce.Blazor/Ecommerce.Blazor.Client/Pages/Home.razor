@@ -4,14 +4,15 @@
 @inject CategoryState CategoryState
 
 <PageTitle>Home</PageTitle>
-<div class="grid grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 w-full">
-    <CategoryBox Name="Electronics" ImgUrl="https://media.icdn.hu/group/entity/78/5cd2830246543uj-proci-menu.png"/>
-    <CategoryBox Name="Electronics" ImgUrl="https://media.icdn.hu/group/entity/78/5cd2830246543uj-proci-menu.png"/>
-    <CategoryBox Name="Electronics" ImgUrl="https://media.icdn.hu/group/entity/78/5cd2830246543uj-proci-menu.png"/>
-    <CategoryBox Name="Electronics" ImgUrl="https://media.icdn.hu/group/entity/78/5cd2830246543uj-proci-menu.png"/>
-    <CategoryBox Name="Electronics" ImgUrl="https://media.icdn.hu/group/entity/78/5cd2830246543uj-proci-menu.png"/>
-    <CategoryBox Name="Electronics" ImgUrl="https://media.icdn.hu/group/entity/78/5cd2830246543uj-proci-menu.png"/>
-</div>
+@if (CategoryState.Categories.Count > 0)
+{
+    <div class="grid grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 w-full">
+        @for (var i = 0; i < 6; i++)
+        {
+            <CategoryBox Name="@CategoryState.Categories[i].Name" ImgUrl="@CategoryState.Categories[i].ImgUrl"/>
+        }
+    </div>
+}
 
 @code {
     protected override async Task OnInitializedAsync()

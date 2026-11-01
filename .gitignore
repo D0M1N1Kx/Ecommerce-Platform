@@ -9,3 +9,5 @@ bin/
 # Antigravity CLI local files
 .antigravity/
 .agent/
+
+**/images

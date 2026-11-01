@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Ecommerce.Shared.DTOs.Category.Responses;
@@ -17,6 +18,11 @@ public class CategoryApiService : ICategoryApiService
     public async Task<List<CategoryResponse>> GetAllAsync()
     {
         var response = await _http.GetAsync("category");
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return [];
+        }
 
         if (!response.IsSuccessStatusCode)
         {
@@ -45,7 +51,7 @@ public class CategoryApiService : ICategoryApiService
         
         content.Add(fileContent, "image", imageFile.Name);
 
-        var response = await _http.PostAsJsonAsync("category", content);
+        var response = await _http.PostAsync("category", content);
 
         if (!response.IsSuccessStatusCode)
         {
