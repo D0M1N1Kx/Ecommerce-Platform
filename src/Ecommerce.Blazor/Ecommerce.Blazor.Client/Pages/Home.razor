@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @using Ecommerce.Blazor.Client.Components
 @using Ecommerce.Blazor.Client.Features.Category
 @inject CategoryState CategoryState
@@ -7,9 +7,9 @@
 @if (CategoryState.Categories.Count > 0)
 {
     <div class="grid grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 w-full">
-        @for (var i = 0; i < 6; i++)
+        @foreach (var category in CategoryState.Categories.Take(6))
         {
-            <CategoryBox Name="@CategoryState.Categories[i].Name" ImgUrl="@CategoryState.Categories[i].ImgUrl"/>
+            <CategoryBox Name="@category.Name" ImgUrl="@category.ImgUrl"/>
         }
     </div>
 }
